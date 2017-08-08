@@ -12,17 +12,29 @@ restService.use(bodyParser.urlencoded({
 restService.use(bodyParser.json());
 
 restService.post('/echo', function(req, res) {
-    var speech =  "Seems like some problem. Speak again.";
+    
+	var end =  "Thank you so much for talking with me..Have happy day..";
+	var speech =  "Seems like some problem. Speak again.";
 	var params = req.body.result.parameters;
+	var first_name = params.first_name; 
+	var partner_name = params.partner_name; 
 	
-	if (params.first_name == "Livin"){
-		speech = "Livin is great";
+	var first_name_length = first_name.length;
+	var partner_name_length = partner_name.length;
+	
+	
+	if((first_name == "Livin" ||  first_name == "livin")  && (partner_name == "Pooja" || partner_name == "pooja" )){
+		
+			speech = "Your name has "first_name_length" characters  and your partner has "partner_name_length" . Guys you people are made of each other .";
+	
+	}else {
+			speech = "Guys, cool.. I wish you all success for future...";
 	}
 	
-	
+	speech=speech.concat(end);
     return res.json({
-        speech: speech,
-        displayText: speech,
+        speech:speech,
+        displayText: speech ,
         source: 'webhook-echo-sample'
     });
 });
