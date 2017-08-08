@@ -3,80 +3,53 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+
 const restService = express();
-
-restService.use(bodyParser.urlencoded({
-    extended: true
-}));
-
 restService.use(bodyParser.json());
 
-restService.post('/echo', function(req, res) {
-    var speech = req.body.result && req.body.result.parameters && req.body.result.parameters.echoText ? req.body.result.parameters.echoText : "Seems like some problem. Speak again."
-    return res.json({
-        speech: speech,
-        displayText: speech,
-        source: 'webhook-echo-sample'
-    });
-});
+restService.post('/hook', function (req, res) {
 
-restService.post('/slack-test', function(req, res) {
+    console.log('hook request');
 
-    var slack_message = {
-        "text": "Details of JIRA board for Browse and Commerce",
-        "attachments": [{
-            "title": "JIRA Board",
-            "title_link": "http://www.google.com",
-            "color": "#36a64f",
+    try {
+        var speech = 'empty speech';
 
-            "fields": [{
-                "title": "Epic Count",
-                "value": "50",
-                "short": "false"
-            }, {
-                "title": "Story Count",
-                "value": "40",
-                "short": "false"
-            }],
+        if (req.body) {
+            var requestBody = req.body;
 
-            "thumb_url": "https://stiltsoft.com/blog/wp-content/uploads/2016/01/5.jira_.png"
-        }, {
-            "title": "Story status count",
-            "title_link": "http://www.google.com",
-            "color": "#f49e42",
+            if (requestBody.result) {
+                speech = '';
 
-            "fields": [{
-                "title": "Not started",
-                "value": "50",
-                "short": "false"
-            }, {
-                "title": "Development",
-                "value": "40",
-                "short": "false"
-            }, {
-                "title": "Development",
-                "value": "40",
-                "short": "false"
-            }, {
-                "title": "Development",
-                "value": "40",
-                "short": "false"
-            }]
-        }]
-    }
-    return res.json({
-        speech: "speech",
-        displayText: "speech",
-        source: 'webhook-echo-sample',
-        data: {
-            "slack": slack_message
+                if (requestBody.result.fulfillment) {
+                    speech += requestBody.result.fulfillment.speech;
+                    speech += ' ';
+                }
+
+                if (requestBody.result.action) {
+                    speech += 'action: ' + requestBody.result.action;
+                }
+            }
         }
-    });
+
+        console.log('result: ', speech);
+
+        return res.json({
+            speech: speech,
+            displayText: speech,
+            source: 'apiai-webhook-sample'
+        });
+    } catch (err) {
+        console.error("Can't process request", err);
+
+        return res.status(400).json({
+            status: {
+                code: 400,
+                errorType: err.message
+            }
+        });
+    }
 });
 
-
-
-
-restService.listen((process.env.PORT || 8000), function() {
-    console.log("Server up and listening");
+restService.listen((process.env.PORT || 5000), function () {
+    console.log("Server listening");
 });
