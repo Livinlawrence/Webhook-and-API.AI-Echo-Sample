@@ -23,14 +23,15 @@ restService.post('/echo', function(req, res) {
 	var partner_name_length = partner_name.length;
 	
 	
-	if((first_name == "Livin" ||  first_name == "livin")  && (partner_name == "Pooja" || partner_name == "pooja" )){
 		
-			speech = "Your name has "first_name_length" characters  and your partner has "partner_name_length" . Guys you people are made of each other .";
+	if(  (first_name == "Livin" ||  first_name == "livin")  
+      && (partner_name == "Pooja" || partner_name == "pooja")){
+		
+			speech = "Your name has " + first_name_length +" characters  and your partner has "+ partner_name_length + " . Guys you people are made of each other .";
 	
 	}else {
 			speech = "Guys, cool.. I wish you all success for future...";
 	}
-	
 	speech=speech.concat(end);
     return res.json({
         speech:speech,
