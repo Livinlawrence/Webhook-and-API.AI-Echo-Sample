@@ -15,7 +15,7 @@ restService.post('/echo', function(req, res) {
     var speech =  "Seems like some problem. Speak again.";
 	var params = req.body.result.parameters;
 	
-	if (parameters.first_name == "Livin"){
+	if (params.first_name == "Livin"){
 		speech = "Livin is great";
 	}
 	
