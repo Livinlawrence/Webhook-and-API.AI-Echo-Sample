@@ -3,53 +3,87 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-
 const restService = express();
+
+restService.use(bodyParser.urlencoded({
+    extended: true
+}));
+
 restService.use(bodyParser.json());
 
-restService.post('/hook', function (req, res) {
-
-    console.log('hook request');
-
-    try {
-        var speech = 'empty speech';
-
-        if (req.body) {
-            var requestBody = req.body;
-
-            if (requestBody.result) {
-                speech = '';
-
-                if (requestBody.result.fulfillment) {
-                    speech += requestBody.result.fulfillment.speech;
-                    speech += ' ';
-                }
-
-                if (requestBody.result.action) {
-                    speech += 'action: ' + requestBody.result.action;
-                }
-            }
-        }
-
-        console.log('result: ', speech);
-
-        return res.json({
-            speech: speech,
-            displayText: speech,
-            source: 'apiai-webhook-sample'
-        });
-    } catch (err) {
-        console.error("Can't process request", err);
-
-        return res.status(400).json({
-            status: {
-                code: 400,
-                errorType: err.message
-            }
-        });
-    }
+restService.post('/echo', function(req, res) {
+    var speech =  "Seems like some problem. Speak again.";
+	var params = req.body.result.parameters;
+	
+	if (parameters.first_name == "Livin"){
+		speech = "Livin is great";
+	}
+	
+	
+    return res.json({
+        speech: speech,
+        displayText: speech,
+        source: 'webhook-echo-sample'
+    });
 });
 
-restService.listen((process.env.PORT || 5000), function () {
-    console.log("Server listening");
+restService.post('/slack-test', function(req, res) {
+
+    var slack_message = {
+        "text": "Details of JIRA board for Browse and Commerce",
+        "attachments": [{
+            "title": "JIRA Board",
+            "title_link": "http://www.google.com",
+            "color": "#36a64f",
+
+            "fields": [{
+                "title": "Epic Count",
+                "value": "50",
+                "short": "false"
+            }, {
+                "title": "Story Count",
+                "value": "40",
+                "short": "false"
+            }],
+
+            "thumb_url": "https://stiltsoft.com/blog/wp-content/uploads/2016/01/5.jira_.png"
+        }, {
+            "title": "Story status count",
+            "title_link": "http://www.google.com",
+            "color": "#f49e42",
+
+            "fields": [{
+                "title": "Not started",
+                "value": "50",
+                "short": "false"
+            }, {
+                "title": "Development",
+                "value": "40",
+                "short": "false"
+            }, {
+                "title": "Development",
+                "value": "40",
+                "short": "false"
+            }, {
+                "title": "Development",
+                "value": "40",
+                "short": "false"
+            }]
+        }]
+    }
+    return res.json({
+        speech: "speech",
+        displayText: "speech",
+        source: 'webhook-echo-sample',
+        data: {
+            "slack": slack_message
+        }
+    });
+});
+
+
+
+
+restService.listen((process.env.PORT || 8000), function() {
+    console.log("Server up and listening");
 });
