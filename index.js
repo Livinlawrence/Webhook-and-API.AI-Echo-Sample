@@ -23,15 +23,31 @@ restService.post('/echo', function(req, res) {
 	var partner_name_length = partner_name.length;
 	
 	
+		if( first_name && partner_name)  {
+			
+			
+			
+			var count=0;
+			for (var i = 0; i < first_name_length; i++) {
+				count=count+letterInWord(first_name.charAt(i),partner_name);
+			}
+		   
+			speech =  " Your name has " + first_name_length +" characters and your partner has "+ partner_name_length +" and you have "+count+" matches." ;
+		   
+			
+			if(  (first_name == "Livin" ||  first_name == "livin")  
 		
-	if(  (first_name == "Livin" ||  first_name == "livin")  
-      && (partner_name == "Pooja" || partner_name == "pooja")){
+				&& (partner_name == "Pooja" || partner_name == "pooja")){
 		
-			speech = "Your name has " + first_name_length +" characters  and your partner has "+ partner_name_length + " . Guys you people are made of each other .";
+					speech = speech + " Guys you people are made for each other.:)";
 	
-	}else {
-			speech = "Guys, cool.. I wish you all success for future...";
-	}
+			}else {
+					speech = speech + " Guys, cool.. I wish you all success for future...";
+			}
+		}
+		
+		
+		
 	speech=speech.concat(end);
     return res.json({
         speech:speech,
@@ -39,6 +55,17 @@ restService.post('/echo', function(req, res) {
         source: 'webhook-echo-sample'
     });
 });
+
+ function letterInWord(letter, word) {
+  var count = 0;
+  for (var i = 0; i < word.length; i++) {
+    if (word.charAt(i) === letter) {
+        count++;
+    } 
+  }
+  return count;
+};
+
 
 restService.post('/slack-test', function(req, res) {
 
